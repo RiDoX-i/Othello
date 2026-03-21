@@ -71,6 +71,8 @@ class Board {
     cells[i][j] = currentPlayer;
   }
 
+// player related functions
+// player turn
   void setCurrentPlayer(TypeCell player) {
     if (player == TypeCell.BLACK || player == TypeCell.WHITE) {
       currentPlayer = player;
@@ -79,6 +81,63 @@ class Board {
 
   TypeCell getCurrentPlayer() {
     return currentPlayer;
+  }
+
+// functions related to valid moves
+
+  void clearValidCells() {
+    for (int i = 0; i < cells.length; i++) {
+      for (int j = 0; j < cells[i].length; j++) {
+        if (cells[i][j] == TypeCell.VALID) {
+          cells[i][j] = TypeCell.EMPTY;
+        }
+      }
+    }
+  }
+
+// this function checks if the move is valid according to the rules of Othello
+  boolean isValidMove(int i, int j) {
+    if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length || cells[i][j] != TypeCell.EMPTY) {
+      return false;
+    }
+
+    TypeCell opponentPlayer = currentPlayer == TypeCell.WHITE ? TypeCell.BLACK : TypeCell.WHITE;
+
+    for (int dirI = -1; dirI <= 1; dirI++) {
+      for (int dirJ = -1; dirJ <= 1; dirJ++) {
+        if (dirI == 0 && dirJ == 0) {
+          continue;
+        }
+
+        int nextI = i + dirI;
+        int nextJ = j + dirJ;
+        boolean foundOpponentPiece = false;
+
+        while (nextI >= 0 && nextI < cells.length && nextJ >= 0 && nextJ < cells[0].length && cells[nextI][nextJ] == opponentPlayer) {
+          foundOpponentPiece = true;
+          nextI += dirI;
+          nextJ += dirJ;
+        }
+
+        if (foundOpponentPiece && nextI >= 0 && nextI < cells.length && nextJ >= 0 && nextJ < cells[0].length && cells[nextI][nextJ] == currentPlayer) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  void refreshValidCells() {
+    clearValidCells();
+
+    for (int i = 0; i < cells.length; i++) {
+      for (int j = 0; j < cells[i].length; j++) {
+        if (isValidMove(i, j)) {
+          cells[i][j] = TypeCell.VALID;
+        }
+      }
+    }
   }
 
 

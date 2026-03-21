@@ -30,7 +30,7 @@ class Game {
     int j = int(cellPos.y);
 
     if (i >= 0 && i < nbCellsY && j >= 0 && j < nbCellsX) {
-      if (board.cells[i][j] == TypeCell.EMPTY) {
+      if (board.cells[i][j] == TypeCell.VALID) {
         println("clicked cell : (" + i + ", " + j + ") - turn: " + currentTurn);
         board.updateCells(i, j);
         changeTurn();
@@ -42,6 +42,7 @@ class Game {
     if (player == TypeCell.BLACK || player == TypeCell.WHITE) {
       currentTurn = player;
       board.setCurrentPlayer(player);
+      board.refreshValidCells();
     }
   }
 
@@ -53,6 +54,7 @@ class Game {
     }
 
     board.setCurrentPlayer(currentTurn);
+    board.refreshValidCells();
     println("next turn : " + currentTurn);
   }
 }
