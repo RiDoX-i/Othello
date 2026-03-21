@@ -71,8 +71,8 @@ class Board {
     cells[i][j] = currentPlayer;
   }
 
-// player related functions
-// player turn
+// player's related functions
+// player's turn
   void setCurrentPlayer(TypeCell player) {
     if (player == TypeCell.BLACK || player == TypeCell.WHITE) {
       currentPlayer = player;
