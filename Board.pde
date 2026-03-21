@@ -95,7 +95,7 @@ class Board {
     }
   }
 
-// this function checks if the move is valid according to the rules of Othello
+ // this function checks if the move is valid according to the rules of Othello
   boolean isValidMove(int i, int j) {
     if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length || cells[i][j] != TypeCell.EMPTY) {
       return false;
@@ -142,7 +142,7 @@ class Board {
 
 
 
-  void drawIt() {
+void drawIt() {
     background(20, 120, 40);
 
     rectMode(CENTER);
