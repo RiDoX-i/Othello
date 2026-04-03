@@ -1,11 +1,8 @@
-// this function is resposible for calling the functions existing in other classes when conditions are met
-
 class Game {
 
   Board board;
   TypeCell currentTurn;
 
-  // board related vars
   PVector posBoard;
   int nbCellsX;
   int nbCellsY;
@@ -33,7 +30,7 @@ class Game {
       if (board.cells[i][j] == TypeCell.VALID) {
         println("clicked cell : (" + i + ", " + j + ") - turn: " + currentTurn);
         board.updateCells(i, j);
-        board.detectPiecesToFlip(i, j);
+        board.detectAndFlip(i, j); // 🔥 IMPORTANT
         changeTurn();
       }
     }
