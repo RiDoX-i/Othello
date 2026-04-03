@@ -1,5 +1,3 @@
-// this class will hold attributes and methods for the related to cells
-
 // constants of the Cells
 enum TypeCell {
   EMPTY,
@@ -10,13 +8,10 @@ enum TypeCell {
 
 class Board {
 
-  // cells
   TypeCell cells[][];
   int cellSize;
   PVector position;
-
   PImage bg;
-
   TypeCell currentPlayer;
 
   Board(){}
@@ -29,15 +24,12 @@ class Board {
     setBoard();
   }
 
-  // setting up the board for Othello
   void setBoard() {
     for (int i = 0; i < cells.length; i++) {
       for (int j = 0; j < cells[i].length; j++) {
         cells[i][j] = TypeCell.EMPTY;
       }
     }
-
-    // setting the 4 first pieces in the middle of the board
 
     int midI = cells.length / 2 - 1;
     int midJ = cells[0].length / 2 - 1;
@@ -48,9 +40,6 @@ class Board {
     cells[midI + 1][midJ + 1] = TypeCell.WHITE;
   }
 
-  /*----------------------------------------FONCTIONS RETURINING INFORMATIONS ABOUT CELLS---------------------------------------*/
-
-  // gets the cell center
   PVector getCellCenter(int i, int j) {
     return new PVector(
       position.x + j * cellSize + (cellSize * 0.5),
@@ -58,7 +47,6 @@ class Board {
     );
   }
 
-  // gets the corresponding cell according the position in game window
   PVector getCellCorrespondPos(PVector pos) {
     return new PVector(
       int((pos.y - position.y) / cellSize),
@@ -66,63 +54,58 @@ class Board {
     );
   }
 
-  /*--------------------------------UPDATING THE CELLS ----------------------------------*/
   void updateCells(int i, int j) {
     cells[i][j] = currentPlayer;
   }
 
-  void flipPiece(int i, int j) {
-    if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length) {
-      return;
-    }
-
-    if (cells[i][j] == TypeCell.BLACK) {
-      cells[i][j] = TypeCell.WHITE;
-    } else if (cells[i][j] == TypeCell.WHITE) {
-      cells[i][j] = TypeCell.BLACK;
-    }
+  // 🔥 flip UNE case
+  void flipOnePiece(int i, int j) {
+    cells[i][j] = currentPlayer;
   }
 
-  void detectPiecesToFlip(int i, int j) {
-    if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length) {
-      return;
-    }
+  // 🔥 détecte et flip correctement
+  void detectAndFlip(int i, int j) {
 
     TypeCell placedPlayer = cells[i][j];
-
-    if (placedPlayer != TypeCell.BLACK && placedPlayer != TypeCell.WHITE) {
-      return;
-    }
-
-    TypeCell opponentPlayer = placedPlayer == TypeCell.WHITE ? TypeCell.BLACK : TypeCell.WHITE;
+    TypeCell opponentPlayer;
+if (placedPlayer == TypeCell.WHITE) {
+  opponentPlayer = TypeCell.BLACK;
+} else {
+  opponentPlayer = TypeCell.WHITE;
+}
 
     for (int dirI = -1; dirI <= 1; dirI++) {
       for (int dirJ = -1; dirJ <= 1; dirJ++) {
-        if (dirI == 0 && dirJ == 0) {
-          continue;
-        }
+
+        if (dirI == 0 && dirJ == 0) continue;
 
         int nextI = i + dirI;
         int nextJ = j + dirJ;
-        int piecesToFlip = 0;
 
-        while (nextI >= 0 && nextI < cells.length && nextJ >= 0 && nextJ < cells[0].length && cells[nextI][nextJ] == opponentPlayer) {
-          piecesToFlip++;
+        ArrayList<PVector> toFlip = new ArrayList<PVector>();
+
+        while (nextI >= 0 && nextI < cells.length &&
+               nextJ >= 0 && nextJ < cells[0].length &&
+               cells[nextI][nextJ] == opponentPlayer) {
+
+          toFlip.add(new PVector(nextI, nextJ));
           nextI += dirI;
           nextJ += dirJ;
         }
 
-        if (piecesToFlip > 0 && nextI >= 0 && nextI < cells.length && nextJ >= 0 && nextJ < cells[0].length && cells[nextI][nextJ] == placedPlayer) {
-          for (int step = 1; step <= piecesToFlip; step++) {
-            flipPiece(i + dirI * step, j + dirJ * step);
+        if (toFlip.size() > 0 &&
+            nextI >= 0 && nextI < cells.length &&
+            nextJ >= 0 && nextJ < cells[0].length &&
+            cells[nextI][nextJ] == placedPlayer) {
+
+          for (PVector p : toFlip) {
+            flipOnePiece(int(p.x), int(p.y));
           }
         }
       }
     }
   }
 
-// player's related functions
-// player's turn
   void setCurrentPlayer(TypeCell player) {
     if (player == TypeCell.BLACK || player == TypeCell.WHITE) {
       currentPlayer = player;
@@ -132,8 +115,6 @@ class Board {
   TypeCell getCurrentPlayer() {
     return currentPlayer;
   }
-
-// functions related to valid moves
 
   void clearValidCells() {
     for (int i = 0; i < cells.length; i++) {
@@ -145,7 +126,6 @@ class Board {
     }
   }
 
- // this function checks if the move is valid according to the rules of Othello
   boolean isValidMove(int i, int j) {
     if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length || cells[i][j] != TypeCell.EMPTY) {
       return false;
@@ -155,21 +135,26 @@ class Board {
 
     for (int dirI = -1; dirI <= 1; dirI++) {
       for (int dirJ = -1; dirJ <= 1; dirJ++) {
-        if (dirI == 0 && dirJ == 0) {
-          continue;
-        }
+        if (dirI == 0 && dirJ == 0) continue;
 
         int nextI = i + dirI;
         int nextJ = j + dirJ;
         boolean foundOpponentPiece = false;
 
-        while (nextI >= 0 && nextI < cells.length && nextJ >= 0 && nextJ < cells[0].length && cells[nextI][nextJ] == opponentPlayer) {
+        while (nextI >= 0 && nextI < cells.length &&
+               nextJ >= 0 && nextJ < cells[0].length &&
+               cells[nextI][nextJ] == opponentPlayer) {
+
           foundOpponentPiece = true;
           nextI += dirI;
           nextJ += dirJ;
         }
 
-        if (foundOpponentPiece && nextI >= 0 && nextI < cells.length && nextJ >= 0 && nextJ < cells[0].length && cells[nextI][nextJ] == currentPlayer) {
+        if (foundOpponentPiece &&
+            nextI >= 0 && nextI < cells.length &&
+            nextJ >= 0 && nextJ < cells[0].length &&
+            cells[nextI][nextJ] == currentPlayer) {
+
           return true;
         }
       }
@@ -190,9 +175,7 @@ class Board {
     }
   }
 
-
-
-void drawIt() {
+  void drawIt() {
     background(20, 120, 40);
 
     rectMode(CENTER);
