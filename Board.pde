@@ -1,6 +1,6 @@
 // this class will hold attributes and methods for the related to cells
 
-// constants of the Cells
+// constants of the Cel
 enum TypeCell {
   EMPTY,
   BLACK,
