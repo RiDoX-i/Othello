@@ -1,6 +1,6 @@
 // this class will hold attributes and methods for the related to cells
 
-// constants of the Cel
+// constants of the Cells
 enum TypeCell {
   EMPTY,
   BLACK,
@@ -18,6 +18,7 @@ class Board {
   PImage bg;
 
   TypeCell currentPlayer;
+  int skippedTurns;
 
   Board(){}
 
@@ -26,6 +27,7 @@ class Board {
     cellSize = 80;
     cells = new TypeCell[nbY][nbX];
     currentPlayer = TypeCell.BLACK;
+    skippedTurns = 0;
     setBoard();
   }
 
@@ -191,6 +193,101 @@ class Board {
         }
       }
     }
+  }
+
+  boolean checkMatriceCells() {
+    for (int i = 0; i < cells.length; i++) {
+      for (int j = 0; j < cells[i].length; j++) {
+        if (cells[i][j] == TypeCell.VALID) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  boolean skipTurns() {
+    if (!checkMatriceCells()) {
+      return false;
+    }
+
+    skippedTurns++;
+    currentPlayer = currentPlayer == TypeCell.WHITE ? TypeCell.BLACK : TypeCell.WHITE;
+    refreshValidCells();
+
+    if (checkMatriceCells()) {
+      skippedTurns++;
+    }
+
+    return true;
+  }
+
+  void resetSkippedTurns() {
+    skippedTurns = 0;
+  }
+
+  boolean isBoardFull() {
+    for (int i = 0; i < cells.length; i++) {
+      for (int j = 0; j < cells[i].length; j++) {
+        if (cells[i][j] == TypeCell.EMPTY || cells[i][j] == TypeCell.VALID) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  boolean isGameFinished() {
+    if (isBoardFull()) {
+      return true;
+    }
+
+    if (skippedTurns >= 2) {
+      return true;
+    }
+
+    return false;
+  }
+
+  TypeCell getWinner() {
+    int blackCount = 0;
+    int whiteCount = 0;
+
+    for (int i = 0; i < cells.length; i++) {
+      for (int j = 0; j < cells[i].length; j++) {
+        if (cells[i][j] == TypeCell.BLACK) {
+          blackCount++;
+        }
+
+        if (cells[i][j] == TypeCell.WHITE) {
+          whiteCount++;
+        }
+      }
+    }
+
+    if (whiteCount > blackCount) {
+      return TypeCell.WHITE;
+    }
+
+    if (blackCount > whiteCount) {
+      return TypeCell.BLACK;
+    }
+
+    return TypeCell.EMPTY;
+  }
+
+  String getWinnerMessage() {
+    TypeCell winner = getWinner();
+
+    if (winner == TypeCell.WHITE) {
+      return "Le joueur white a gagné";
+    }
+
+    if (winner == TypeCell.BLACK) {
+      return "Le joueur black a gagné";
+    }
+
+    return "Egalité";
   }
 
 
