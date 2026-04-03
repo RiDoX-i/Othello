@@ -66,6 +66,9 @@ class Board {
     );
   }
 
+
+
+
   /*--------------------------------UPDATING THE CELLS ----------------------------------*/
   void updateCells(int i, int j) {
     cells[i][j] = currentPlayer;

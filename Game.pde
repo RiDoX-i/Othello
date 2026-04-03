@@ -30,7 +30,7 @@ class Game {
       if (board.cells[i][j] == TypeCell.VALID) {
         println("clicked cell : (" + i + ", " + j + ") - turn: " + currentTurn);
         board.updateCells(i, j);
-        board.detectAndFlip(i, j); // 🔥 IMPORTANT
+        board.detectPiecesToFlip(i, j);
         changeTurn();
       }
     }
