@@ -77,54 +77,58 @@ class Board {
   }
 
   void flipPiece(int i, int j) {
-    if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length) {
-      return;
-    }
-
-    if (cells[i][j] == TypeCell.BLACK) {
-      cells[i][j] = TypeCell.WHITE;
-    } else if (cells[i][j] == TypeCell.WHITE) {
-      cells[i][j] = TypeCell.BLACK;
-    }
+  if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length) {
+    return;
   }
 
+  cells[i][j] = currentPlayer;
+}
+
   void detectPiecesToFlip(int i, int j) {
-    if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length) {
-      return;
-    }
 
-    TypeCell placedPlayer = cells[i][j];
+  if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length) {
+    return;
+  }
 
-    if (placedPlayer != TypeCell.BLACK && placedPlayer != TypeCell.WHITE) {
-      return;
-    }
+  TypeCell placedPlayer = cells[i][j];
 
-    TypeCell opponentPlayer = placedPlayer == TypeCell.WHITE ? TypeCell.BLACK : TypeCell.WHITE;
+  if (placedPlayer != TypeCell.BLACK && placedPlayer != TypeCell.WHITE) {
+    return;
+  }
 
-    for (int dirI = -1; dirI <= 1; dirI++) {
-      for (int dirJ = -1; dirJ <= 1; dirJ++) {
-        if (dirI == 0 && dirJ == 0) {
-          continue;
-        }
+  TypeCell opponentPlayer = placedPlayer == TypeCell.WHITE ? TypeCell.BLACK : TypeCell.WHITE;
 
-        int nextI = i + dirI;
-        int nextJ = j + dirJ;
-        int piecesToFlip = 0;
+  for (int dirI = -1; dirI <= 1; dirI++) {
+    for (int dirJ = -1; dirJ <= 1; dirJ++) {
 
-        while (nextI >= 0 && nextI < cells.length && nextJ >= 0 && nextJ < cells[0].length && cells[nextI][nextJ] == opponentPlayer) {
-          piecesToFlip++;
-          nextI += dirI;
-          nextJ += dirJ;
-        }
+      if (dirI == 0 && dirJ == 0) continue;
 
-        if (piecesToFlip > 0 && nextI >= 0 && nextI < cells.length && nextJ >= 0 && nextJ < cells[0].length && cells[nextI][nextJ] == placedPlayer) {
-          for (int step = 1; step <= piecesToFlip; step++) {
-            flipPiece(i + dirI * step, j + dirJ * step);
-          }
+      int nextI = i + dirI;
+      int nextJ = j + dirJ;
+
+      ArrayList<PVector> toFlip = new ArrayList<PVector>();
+
+      while (nextI >= 0 && nextI < cells.length &&
+             nextJ >= 0 && nextJ < cells[0].length &&
+             cells[nextI][nextJ] == opponentPlayer) {
+
+        toFlip.add(new PVector(nextI, nextJ));
+        nextI += dirI;
+        nextJ += dirJ;
+      }
+
+      if (toFlip.size() > 0 &&
+          nextI >= 0 && nextI < cells.length &&
+          nextJ >= 0 && nextJ < cells[0].length &&
+          cells[nextI][nextJ] == placedPlayer) {
+
+        for (PVector p : toFlip) {
+          flipPiece(int(p.x), int(p.y));
         }
       }
     }
   }
+}
 
 // player's related functions
 // player's turn
