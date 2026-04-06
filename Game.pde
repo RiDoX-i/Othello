@@ -7,14 +7,19 @@ class Game {
   int nbCellsY;
   int endGameStartTime;
 
+  int endGameStartTime;
+
   Game() {
     posBoard = new PVector(80, 80);
     nbCellsX = 8;
     nbCellsY = 8;
     endGameStartTime = -1;
+<<<<<<< HEAD
     board = new Board(posBoard, nbCellsX, nbCellsY);
     setStartingPlayer(TypeCell.BLACK);
   }
+=======
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
 
   void restart() {
     endGameStartTime = -1;
@@ -25,6 +30,10 @@ class Game {
   void drawIt() {
     board.drawIt();
     drawCurrentTurnWidget();
+<<<<<<< HEAD
+=======
+
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
     if (board.isGameFinished()) {
       drawEndGameWidget();
     }
@@ -34,6 +43,10 @@ class Game {
     if (board.isGameFinished()) {
       return;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
     PVector cellPos = board.getCellCorrespondPos(new PVector(x, y));
     int i = int(cellPos.x);
     int j = int(cellPos.y);
@@ -77,11 +90,19 @@ class Game {
     stroke(255);
     fill(20, 120, 40);
     rect(width * 0.5, 40, 180, 50, 12);
+<<<<<<< HEAD
+=======
+
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
     if (currentTurn == TypeCell.WHITE) {
       fill(245);
     } else {
       fill(20);
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
     ellipse(width * 0.5 - 50, 40, 26, 26);
     fill(255);
     textAlign(CENTER, CENTER);
@@ -93,11 +114,16 @@ class Game {
     if (endGameStartTime == -1) {
       endGameStartTime = millis();
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
     rectMode(CENTER);
     textAlign(CENTER, CENTER);
     fill(0, 0, 0, 180);
     noStroke();
     rect(width * 0.5, height * 0.5, 420, 120, 18);
+<<<<<<< HEAD
     fill(255);
     textSize(28);
     text(board.getWinnerMessage(), width * 0.5, height * 0.5);
@@ -107,3 +133,16 @@ class Game {
     }
   }
 }
+=======
+
+    fill(255);
+    textSize(28);
+    text(board.getWinnerMessage(), width * 0.5, height * 0.5);
+
+    if (millis() - endGameStartTime > 5000) {
+      // restart(); to be declared after by yanni or rayane
+      return;
+    }
+  }
+}
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
