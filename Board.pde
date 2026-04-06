@@ -34,10 +34,15 @@ class Board {
     save       = new TypeCell[nbY][nbX]; // *****
 
     currentPlayer = TypeCell.BLACK;
+<<<<<<< HEAD
     skippedTurns  = 0;
     lastMove      = null;
     setBoard(cells,save);
     
+=======
+    skippedTurns = 0;
+    setBoard();
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
   }
 
   // -------------------------------------------------------------------------
@@ -105,19 +110,39 @@ class Board {
   }
 
   void flipPiece(int i, int j) {
+<<<<<<< HEAD
     if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length) return;
     if      (cells[i][j] == TypeCell.BLACK) cells[i][j] = TypeCell.WHITE;
     else if (cells[i][j] == TypeCell.WHITE) cells[i][j] = TypeCell.BLACK;
+=======
+  if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length) {
+    return;
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
   }
 
+  cells[i][j] = currentPlayer;
+}
+
   void detectPiecesToFlip(int i, int j) {
+<<<<<<< HEAD
     if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length) return;
 
     TypeCell placedPlayer = cells[i][j];
     if (placedPlayer != TypeCell.BLACK && placedPlayer != TypeCell.WHITE) return;
+=======
 
-    TypeCell opponentPlayer = placedPlayer == TypeCell.WHITE ? TypeCell.BLACK : TypeCell.WHITE;
+  if (i < 0 || i >= cells.length || j < 0 || j >= cells[0].length) {
+    return;
+  }
 
+  TypeCell placedPlayer = cells[i][j];
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
+
+  if (placedPlayer != TypeCell.BLACK && placedPlayer != TypeCell.WHITE) {
+    return;
+  }
+
+<<<<<<< HEAD
     for (int dirI = -1; dirI <= 1; dirI++) {
       for (int dirJ = -1; dirJ <= 1; dirJ++) {
         if (dirI == 0 && dirJ == 0) continue;
@@ -141,10 +166,41 @@ class Board {
           for (int step = 1; step <= piecesToFlip; step++) {
             flipPiece(i + dirI * step, j + dirJ * step);
           }
+=======
+  TypeCell opponentPlayer = placedPlayer == TypeCell.WHITE ? TypeCell.BLACK : TypeCell.WHITE;
+
+  for (int dirI = -1; dirI <= 1; dirI++) {
+    for (int dirJ = -1; dirJ <= 1; dirJ++) {
+
+      if (dirI == 0 && dirJ == 0) continue;
+
+      int nextI = i + dirI;
+      int nextJ = j + dirJ;
+
+      ArrayList<PVector> toFlip = new ArrayList<PVector>();
+
+      while (nextI >= 0 && nextI < cells.length &&
+             nextJ >= 0 && nextJ < cells[0].length &&
+             cells[nextI][nextJ] == opponentPlayer) {
+
+        toFlip.add(new PVector(nextI, nextJ));
+        nextI += dirI;
+        nextJ += dirJ;
+      }
+
+      if (toFlip.size() > 0 &&
+          nextI >= 0 && nextI < cells.length &&
+          nextJ >= 0 && nextJ < cells[0].length &&
+          cells[nextI][nextJ] == placedPlayer) {
+
+        for (PVector p : toFlip) {
+          flipPiece(int(p.x), int(p.y));
+>>>>>>> dfc7755dd9cf81817099e3804c9d538207ee736c
         }
       }
     }
   }
+}
 
  
   void setCurrentPlayer(TypeCell player) {
@@ -243,6 +299,101 @@ class Board {
     TypeCell winner = getWinner();
     if (winner == TypeCell.WHITE) return "Le joueur white a gagné";
     if (winner == TypeCell.BLACK) return "Le joueur black a gagné";
+    return "Egalité";
+  }
+
+  boolean checkMatriceCells() {
+    for (int i = 0; i < cells.length; i++) {
+      for (int j = 0; j < cells[i].length; j++) {
+        if (cells[i][j] == TypeCell.VALID) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  boolean skipTurns() {
+    if (!checkMatriceCells()) {
+      return false;
+    }
+
+    skippedTurns++;
+    currentPlayer = currentPlayer == TypeCell.WHITE ? TypeCell.BLACK : TypeCell.WHITE;
+    refreshValidCells();
+
+    if (checkMatriceCells()) {
+      skippedTurns++;
+    }
+
+    return true;
+  }
+
+  void resetSkippedTurns() {
+    skippedTurns = 0;
+  }
+
+  boolean isBoardFull() {
+    for (int i = 0; i < cells.length; i++) {
+      for (int j = 0; j < cells[i].length; j++) {
+        if (cells[i][j] == TypeCell.EMPTY || cells[i][j] == TypeCell.VALID) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  boolean isGameFinished() {
+    if (isBoardFull()) {
+      return true;
+    }
+
+    if (skippedTurns >= 2) {
+      return true;
+    }
+
+    return false;
+  }
+
+  TypeCell getWinner() {
+    int blackCount = 0;
+    int whiteCount = 0;
+
+    for (int i = 0; i < cells.length; i++) {
+      for (int j = 0; j < cells[i].length; j++) {
+        if (cells[i][j] == TypeCell.BLACK) {
+          blackCount++;
+        }
+
+        if (cells[i][j] == TypeCell.WHITE) {
+          whiteCount++;
+        }
+      }
+    }
+
+    if (whiteCount > blackCount) {
+      return TypeCell.WHITE;
+    }
+
+    if (blackCount > whiteCount) {
+      return TypeCell.BLACK;
+    }
+
+    return TypeCell.EMPTY;
+  }
+
+  String getWinnerMessage() {
+    TypeCell winner = getWinner();
+
+    if (winner == TypeCell.WHITE) {
+      return "Le joueur white a gagné";
+    }
+
+    if (winner == TypeCell.BLACK) {
+      return "Le joueur black a gagné";
+    }
+
     return "Egalité";
   }
 
